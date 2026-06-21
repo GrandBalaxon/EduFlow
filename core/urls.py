@@ -3,10 +3,10 @@ from rest_framework.routers import DefaultRouter
 
 from core.views import CourseViewSet
 
-name = CoreConfig.name
+app_name = CoreConfig.name
 
 router = DefaultRouter()
-router.register(r'course', CourseViewSet, basename='course')
+router.register(r'', CourseViewSet, basename='course')
 
 urlpatterns = []
 
