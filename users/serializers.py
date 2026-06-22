@@ -13,3 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
             "city",
             "avatar"
         ]
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            }
+        }
