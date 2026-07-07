@@ -63,7 +63,7 @@ class Payment(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="payments", verbose_name="Пользователь"
     )
-    date = models.DateField(auto_created=True, verbose_name="Дата платежа")
+    date = models.DateField(auto_now_add=True, verbose_name="Дата платежа")
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный курс"
     )
