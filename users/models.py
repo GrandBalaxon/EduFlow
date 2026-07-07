@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
+from core.models import Course, Lesson
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -55,3 +57,35 @@ class User(AbstractBaseUser):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="payments", verbose_name="Пользователь"
+    )
+    date = models.DateField(auto_created=True, verbose_name="Дата платежа")
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный курс"
+    )
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный отдельный урок"
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма оплаты")
+    method = models.CharField(
+        choices=[
+            ('cash', 'Наличные'),
+            ('transfer', 'Перевод')
+        ],
+        verbose_name="Метод оплаты"
+    )
+
+    def __str__(self):
+        num = self.pk
+        user = self.user.__str__()
+        purchase = self.course.__str__() if self.course else self.lesson.__str__()
+        amount = self.amount
+        return f"{num} - {user} - {purchase} - {amount} - {self.date}"
+
+    class Meta:
+        verbose_name = "Платёж"
+        verbose_name_plural = "Платежи"
