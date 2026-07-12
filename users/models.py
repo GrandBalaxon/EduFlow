@@ -43,11 +43,20 @@ class User(AbstractBaseUser):
     avatar = models.ImageField(upload_to="users/avatar", blank=True, null=True, verbose_name="Аватар профиля")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+    def has_perm(self, perm, obj=None):
+        """Проверка прав, для суперпользователя всегда True"""
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        """Проверка прав на модули, для суперпользователя всегда True"""
+        return self.is_superuser
 
     def __str__(self):
         return self.email
