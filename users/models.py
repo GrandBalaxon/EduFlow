@@ -1,8 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
-from core.models import Course, Lesson
-
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -65,10 +63,10 @@ class Payment(models.Model):
     )
     date = models.DateField(auto_now_add=True, verbose_name="Дата платежа")
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный курс"
+        'core.Course', on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный курс"
     )
     lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный отдельный урок"
+        'core.Lesson', on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный отдельный урок"
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма оплаты")
     method = models.CharField(
