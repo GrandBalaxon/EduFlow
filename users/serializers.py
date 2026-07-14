@@ -9,23 +9,20 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserPublicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "phone_number", "city", "avatar"]
+
+
+class UserPrivateSerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = [
-            "email",
-            "password",
-            "phone_number",
-            "city",
-            "avatar",
-            "payments"
-        ]
+        fields = ["email", "password", "phone_number", "city", "avatar", "payments"]
         extra_kwargs = {
-            'password': {
-                'write_only': True
-            }
+            'password': {'write_only': True}
         }
 
     def create(self, validated_data):
