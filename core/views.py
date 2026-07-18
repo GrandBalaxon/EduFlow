@@ -1,13 +1,13 @@
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
-from core.mixins import OwnerOrModeratorFilterMixin
+from core.mixins import LessonOwnerOrModeratorFilterMixin
 from core.models import Course, Lesson
 from core.permissions import IsModerator, IsNotModerator, IsOwner
 from core.serializers import CourseSerializer, LessonSerializer
 
 
-class CourseViewSet(OwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
+class CourseViewSet(LessonOwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
@@ -24,12 +24,12 @@ class CourseViewSet(OwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
         return [permission() for permission in self.permission_classes]
 
 
-class LessonListApiView(OwnerOrModeratorFilterMixin, generics.ListAPIView):
+class LessonListApiView(LessonOwnerOrModeratorFilterMixin, generics.ListAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
-class LessonRetrieveApiView(OwnerOrModeratorFilterMixin, generics.RetrieveAPIView):
+class LessonRetrieveApiView(LessonOwnerOrModeratorFilterMixin, generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
@@ -43,11 +43,11 @@ class LessonCreateApiView(generics.CreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class LessonUpdateApiView(OwnerOrModeratorFilterMixin, generics.UpdateAPIView):
+class LessonUpdateApiView(LessonOwnerOrModeratorFilterMixin, generics.UpdateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
-class LessonDestroyApiView(OwnerOrModeratorFilterMixin, generics.DestroyAPIView):
+class LessonDestroyApiView(LessonOwnerOrModeratorFilterMixin, generics.DestroyAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsOwner, IsNotModerator]
