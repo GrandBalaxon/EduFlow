@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from users.models import User, Payment
 
@@ -22,7 +23,15 @@ class UserPrivateSerializer(serializers.ModelSerializer):
         model = User
         fields = ["email", "password", "phone_number", "city", "avatar", "payments"]
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
+            'email': {
+                'validators': [
+                    UniqueValidator(
+                        queryset=User.objects.all(),
+                        message="Пользователь с таким email уже существует."
+                    )
+                ]
+            }
         }
 
     def create(self, validated_data):
