@@ -41,9 +41,14 @@ class LessonListApiView(generics.ListAPIView):
 
 
 class LessonRetrieveApiView(generics.RetrieveAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
+
+    def get_queryset(self):
+        queryset = Lesson.objects.all()
+        if self.request.user.groups.filter(name='Moderator').exists():
+            return queryset
+        return queryset.filter(owner=self.request.user)
 
 
 class LessonCreateApiView(generics.CreateAPIView):
@@ -56,12 +61,22 @@ class LessonCreateApiView(generics.CreateAPIView):
 
 
 class LessonUpdateApiView(generics.UpdateAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
+    def get_queryset(self):
+        queryset = Lesson.objects.all()
+        if self.request.user.groups.filter(name='Moderator').exists():
+            return queryset
+        return queryset.filter(owner=self.request.user)
+
 
 class LessonDestroyApiView(generics.DestroyAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsOwner, IsNotModerator]
+
+    def get_queryset(self):
+        queryset = Lesson.objects.all()
+        if self.request.user.groups.filter(name='Moderator').exists():
+            return queryset
+        return queryset.filter(owner=self.request.user)
