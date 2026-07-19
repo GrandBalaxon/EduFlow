@@ -1,4 +1,6 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
 from core.mixins import LessonOwnerOrModeratorFilterMixin
@@ -43,7 +45,14 @@ class LessonCreateApiView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsNotModerator]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        course_pk = self.kwargs.get('course_pk')
+        course = get_object_or_404(Course, pk=course_pk)
+
+        # Только владелец курса может добавлять в него уроки
+        if course.owner != self.request.user:
+            raise PermissionDenied('Только владелец курса может добавлять уроки')
+
+        serializer.save(owner=self.request.user, course=course)
 
 
 class LessonUpdateApiView(LessonOwnerOrModeratorFilterMixin, generics.UpdateAPIView):
