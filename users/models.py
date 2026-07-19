@@ -1,7 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-
-from core.models import Course, Lesson
 
 
 class CustomUserManager(BaseUserManager):
@@ -26,7 +25,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name="Почта", help_text="Введите почту")
     phone_number = models.CharField(
         max_length=20,
@@ -51,6 +50,14 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    def has_perm(self, perm, obj=None):
+        """Проверка прав, для суперпользователя всегда True"""
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        """Проверка прав на модули, для суперпользователя всегда True"""
+        return self.is_superuser
+
     def __str__(self):
         return self.email
 
@@ -65,10 +72,10 @@ class Payment(models.Model):
     )
     date = models.DateField(auto_now_add=True, verbose_name="Дата платежа")
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный курс"
+        'core.Course', on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный курс"
     )
     lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный отдельный урок"
+        'core.Lesson', on_delete=models.CASCADE, null=True, blank=True, verbose_name="Оплаченный отдельный урок"
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма оплаты")
     method = models.CharField(
