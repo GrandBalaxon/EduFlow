@@ -58,8 +58,8 @@ class SubscriptionApiView(APIView):
 
     def post(self, *args, **kwargs):
         user = self.request.user
-        course_id = self.request.data.get('course_id')
-        course_item = get_object_or_404(Course, pk=course_id)
+        course_pk = kwargs.get('course_pk')
+        course_item = get_object_or_404(Course, pk=course_pk)
 
         subs_item, created = Subscription.objects.get_or_create(
             user=user,
