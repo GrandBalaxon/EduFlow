@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from core.models import Course, Lesson
-from users.models import User
+from users.models import User, Subscription
 
 
 class BaseTestCase(APITestCase):
@@ -185,3 +185,43 @@ class LessonCRUDTestCase(BaseTestCase):
         response = self.client.delete(self.lesson_delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Lesson.objects.count(), 1)
+
+
+class SubscriptionTests(BaseTestCase):
+    """Тесты функционала подписки на курс"""
+    def setUp(self):
+        super().setUp()
+        self.subscription_url = reverse('core:subscription', kwargs={'course_pk': self.course.pk})
+
+
+    def test_subscribe_to_course(self):
+        """ Пользователь может подписаться на курс """
+        self.client.force_authenticate(user=self.other_user)
+        response = self.client.post(self.subscription_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], 'Подписка добавлена')
+        self.assertTrue(response.data['is_active'])
+
+    def test_unsubscribe_from_course(self):
+        """ Пользователь может отписаться от курса """
+        self.client.force_authenticate(user=self.other_user)
+        self.client.post(self.subscription_url)
+        response = self.client.post(self.subscription_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], 'Подписка отключена')
+        self.assertFalse(response.data['is_active'])
+
+    def test_resubscribe_to_course(self):
+        """ Пользователь может возобновить подписку """
+        self.client.force_authenticate(user=self.other_user)
+        self.client.post(self.subscription_url)
+        self.client.post(self.subscription_url)
+        response = self.client.post(self.subscription_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], 'Подписка возобновлена')
+        self.assertTrue(response.data['is_active'])
+
+    def test_unauthenticated_cannot_subscribe(self):
+        """ Неавторизованный не может подписаться """
+        response = self.client.post(self.subscription_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
