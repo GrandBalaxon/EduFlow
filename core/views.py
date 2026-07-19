@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.mixins import LessonOwnerOrModeratorFilterMixin
 from core.models import Course, Lesson
+from core.paginators import MyPageNumberPagination
 from core.permissions import IsModerator, IsNotModerator, IsOwner
 from core.serializers import CourseSerializer, LessonSerializer
 
@@ -10,6 +11,7 @@ from core.serializers import CourseSerializer, LessonSerializer
 class CourseViewSet(LessonOwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    pagination_class = MyPageNumberPagination
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -27,6 +29,7 @@ class CourseViewSet(LessonOwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
 class LessonListApiView(LessonOwnerOrModeratorFilterMixin, generics.ListAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
+    pagination_class = MyPageNumberPagination
 
 
 class LessonRetrieveApiView(LessonOwnerOrModeratorFilterMixin, generics.RetrieveAPIView):
