@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -12,6 +13,13 @@ from users.permissions import IsProfileOwner
 from users.serializers import UserPublicSerializer, UserPrivateSerializer, PaymentSerializer
 
 
+@extend_schema(
+    tags=["Пользователи"],
+    summary='Получение данных о пользователе',
+    description='Авторизованный пользователь может посмотреть профиль любого пользователя. '
+                'Для своего профиля возвращается полная информация (email, телефон, город, аватар, платежи), '
+                'для чужого — только общая (email, телефон, город, аватар).'
+)
 class UserRetrieveApiView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
@@ -22,25 +30,30 @@ class UserRetrieveApiView(generics.RetrieveAPIView):
             return UserPrivateSerializer
         return UserPublicSerializer
 
-
+@extend_schema(tags=["Пользователи"], summary="Регистрация / Создание пользователя")
 class UserCreateApiView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserPrivateSerializer
     permission_classes = [AllowAny]
 
-
+@extend_schema(tags=["Пользователи"], summary="Обновление данных пользователя")
 class UserUpdateApiView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserPrivateSerializer
     permission_classes = [IsAuthenticated, IsProfileOwner]
 
-
+@extend_schema(
+    tags=["Пользователи"],
+    summary="Удаление аккаунта пользователя",
+    description="Только владелец (не модератор) может удалить собственный аккаунт."
+)
 class UserDestroyApiView(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserPrivateSerializer
     permission_classes = [IsAuthenticated, IsProfileOwner]
 
 
+@extend_schema(tags=["Платежи"], summary="Список платежей пользователя")
 class PaymentsListApiView(generics.ListAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
@@ -53,6 +66,13 @@ class PaymentsListApiView(generics.ListAPIView):
         return super().get_queryset().filter(user=self.request.user)
 
 
+@extend_schema(
+    tags=["Подписки"],
+    summary="Управление подпиской на курс",
+    description="Переключает подписку: если нет — создаёт, если есть — отключает, если отключена — возобновляет.",
+    request=None,  # тело запроса не требуется
+    responses={200: {"description": "Статус подписки изменён"}},
+)
 class SubscriptionApiView(APIView):
     permission_classes = [IsAuthenticated]
 
