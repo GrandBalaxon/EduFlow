@@ -26,7 +26,8 @@ build-backend = "poetry.core.masonry.api"
 
 [dependency-groups]
 dev = [
-    "ipython (>=9.14.1,<10.0.0)"
+    "ipython (>=9.14.1,<10.0.0)",
+    "coverage (>=7.15.2,<8.0.0)"
 ]
 lint = [
     "black (>=26.5.1,<27.0.0)",

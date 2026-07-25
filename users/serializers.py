@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from users.models import User, Payment
+from users.models import User, Payment, Subscription
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -49,3 +49,10 @@ class UserPrivateSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = ['id', 'user', 'course', 'created_at']
+        read_only_fields = ['user']
