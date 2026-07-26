@@ -16,18 +16,16 @@ def create_stripe_product(product: 'Course | Lesson') -> stripe.Product:
     stripe_product = stripe.Product.create(
         name=name,
         description=product.description,
-        default_price=product.price,
     )
     return stripe_product
 
 
-def create_stripe_price(product: 'Product') -> stripe.Price:
+def create_stripe_price(product: 'Product', price: int) -> stripe.Price:
     """Создаёт цену в Stripe."""
     price = stripe.Price.create(
         currency='rub',
-        unit_amount=int(product.default_price * 100),
+        unit_amount=int(price * 100),
         product=product.id,
-        product_data={"name": product.name}
     )
     return price
 

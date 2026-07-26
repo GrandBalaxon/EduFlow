@@ -8,6 +8,16 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = "__all__"
+        read_only_fields = (
+            'user',
+            'method',
+            'course',
+            'lesson',
+            'amount',
+            'stripe_session_id',
+            'stripe_payment_url',
+            'is_paid',
+        )
 
 
 class UserPublicSerializer(serializers.ModelSerializer):

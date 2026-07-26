@@ -67,7 +67,7 @@ class PaymentsListApiView(generics.ListAPIView):
         return super().get_queryset().filter(user=self.request.user)
 
 
-@extend_schema(tags=["Платежи"])
+@extend_schema(tags=["Платежи"], summary="Создание платежа за курс или урок")
 class PaymentCreateApiView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
@@ -80,14 +80,26 @@ class PaymentCreateApiView(generics.CreateAPIView):
         # Определяем, за что платёж
         if lesson_pk:
             lesson = get_object_or_404(Lesson, pk=lesson_pk, course_id=course_pk)
-            payment = serializer.save(user=self.request.user, method='stripe', course=lesson.course, lesson=lesson)
+            payment = serializer.save(
+                user=self.request.user,
+                method='stripe',
+                course=lesson.course,
+                lesson=lesson,
+                amount=lesson.price
+            )
             product = create_stripe_product(lesson)
         else:
             course = get_object_or_404(Course, pk=course_pk)
-            payment = serializer.save(user=self.request.user, method='stripe', course=course)
+            payment = serializer.save(
+                user=self.request.user,
+                method='stripe',
+                course=course,
+                amount=course.price
+            )
             product = create_stripe_product(course)
 
-        price = create_stripe_price(product)
+        payment_amount = payment.amount * 100
+        price = create_stripe_price(product, payment_amount)
         session = create_stripe_checkout_session(price.id)
 
         payment.stripe_session_id = session.id
