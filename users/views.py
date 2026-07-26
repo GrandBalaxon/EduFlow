@@ -7,10 +7,11 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.models import Course
+from core.models import Course, Lesson
 from users.models import User, Payment, Subscription
 from users.permissions import IsProfileOwner
 from users.serializers import UserPublicSerializer, UserPrivateSerializer, PaymentSerializer
+from users.services import create_stripe_product, create_stripe_price, create_stripe_checkout_session
 
 
 @extend_schema(
@@ -64,6 +65,34 @@ class PaymentsListApiView(generics.ListAPIView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+
+
+@extend_schema(tags=["Платежи"])
+class PaymentCreateApiView(generics.CreateAPIView):
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        course_pk = self.kwargs.get('course_pk')
+        lesson_pk = self.kwargs.get('pk')
+
+        # Определяем, за что платёж
+        if lesson_pk:
+            lesson = get_object_or_404(Lesson, pk=lesson_pk, course_id=course_pk)
+            payment = serializer.save(user=self.request.user, method='stripe', course=lesson.course, lesson=lesson)
+            product = create_stripe_product(lesson)
+        else:
+            course = get_object_or_404(Course, pk=course_pk)
+            payment = serializer.save(user=self.request.user, method='stripe', course=course)
+            product = create_stripe_product(course)
+
+        price = create_stripe_price(product)
+        session = create_stripe_checkout_session(price.id)
+
+        payment.stripe_session_id = session.id
+        payment.stripe_payment_url = session.url
+        payment.save()
 
 
 @extend_schema(
