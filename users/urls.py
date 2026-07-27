@@ -2,7 +2,7 @@ from django.urls import path
 
 from users.apps import UsersConfig
 from users.views import UserRetrieveApiView, UserUpdateApiView, UserCreateApiView, PaymentsListApiView, \
-    UserDestroyApiView
+    UserDestroyApiView, PaymentStatusApiView
 
 app_name = UsersConfig.name
 
@@ -13,4 +13,5 @@ urlpatterns = [
     path('<int:pk>/delete/', UserDestroyApiView.as_view(), name='delete'),
 
     path('payments/', PaymentsListApiView.as_view(), name='payments'),
+    path('payments/<int:pk>/status/', PaymentStatusApiView.as_view(), name='payment_status'),
 ]

@@ -1,7 +1,8 @@
+import stripe
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -98,13 +99,43 @@ class PaymentCreateApiView(generics.CreateAPIView):
             )
             product = create_stripe_product(course)
 
-        payment_amount = payment.amount * 100
+        payment_amount = payment.amount
         price = create_stripe_price(product, payment_amount)
         session = create_stripe_checkout_session(price.id)
 
         payment.stripe_session_id = session.id
         payment.stripe_payment_url = session.url
         payment.save()
+
+
+@extend_schema(
+    tags=["Платежи"],
+    summary="Проверка статуса платежа",
+    description="Проверяет статус сессии Stripe и обновляет is_paid в локальной записи."
+)
+class PaymentStatusApiView(generics.RetrieveAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        payment = self.get_object()
+
+        if not payment.stripe_session_id:
+            return Response(
+                {'error': 'У этого платежа нет сессии Stripe'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            session = stripe.checkout.Session.retrieve(payment.stripe_session_id)
+            payment.is_paid = session.payment_status == 'paid'
+            payment.save(update_fields=['is_paid'])
+        except stripe.error.StripeError as e:
+            return Response(
+                {'error': f'Ошибка Stripe: {str(e)}'},
+                status=status.HTTP_502_BAD_GATEWAY
+            )
+
+        return Response(self.get_serializer(payment).data)
 
 
 @extend_schema(
