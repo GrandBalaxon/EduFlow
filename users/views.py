@@ -74,6 +74,15 @@ class PaymentCreateApiView(generics.CreateAPIView):
     queryset = Payment.objects.all()
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except stripe.error.StripeError as e:
+            return Response(
+                {'error': f'Ошибка Stripe: {str(e)}'},
+                status=status.HTTP_502_BAD_GATEWAY
+            )
+
     def perform_create(self, serializer):
         course_pk = self.kwargs.get('course_pk')
         lesson_pk = self.kwargs.get('pk')
