@@ -18,6 +18,7 @@ class Course(models.Model):
     )
     description = models.TextField(verbose_name="Краткое описание")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name="courses")
+    price = models.PositiveIntegerField(verbose_name='Цена (в рублях)', default=100)
 
     def __str__(self):
         return self.title
@@ -53,6 +54,7 @@ class Lesson(models.Model):
     )
     video_link = models.URLField(unique=True, blank=True, null=True, verbose_name="Ссылка на видео урока")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name="lessons")
+    price = models.PositiveIntegerField(verbose_name='Цена (в рублях)', default=100)
 
     def __str__(self):
         return f"{self.course.title}: Урок {self.id} - {self.title}"

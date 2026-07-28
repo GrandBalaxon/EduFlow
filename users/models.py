@@ -81,10 +81,15 @@ class Payment(models.Model):
     method = models.CharField(
         choices=[
             ('cash', 'Наличные'),
-            ('transfer', 'Перевод')
+            ('transfer', 'Перевод'),
+            ('stripe', 'Stripe')
         ],
         verbose_name="Метод оплаты"
     )
+    # Stripe
+    stripe_session_id = models.CharField(max_length=255, blank=True, null=True, verbose_name="ID сессии Stripe")
+    stripe_payment_url = models.URLField(max_length=500, blank=True, null=True, verbose_name="Ссылка на оплату Stripe")
+    is_paid = models.BooleanField(default=False, verbose_name="Статус оплаты")
 
     def __str__(self):
         num = self.pk

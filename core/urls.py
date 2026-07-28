@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from core.apps import CoreConfig
 from core.views import CourseViewSet, LessonListApiView, LessonCreateApiView, LessonRetrieveApiView, \
     LessonUpdateApiView, LessonDestroyApiView
-from users.views import SubscriptionApiView
+from users.views import SubscriptionApiView, PaymentCreateApiView
 
 app_name = CoreConfig.name
 
@@ -20,6 +20,10 @@ urlpatterns = [
     path('<int:course_pk>/lesson/<int:pk>/delete/', LessonDestroyApiView.as_view(), name='lesson_delete'),
 
     path('<int:course_pk>/subscription/', SubscriptionApiView.as_view(), name='subscription'),
+
+    # ссылки на платежи
+    path('<int:course_pk>/payment/', PaymentCreateApiView.as_view(), name='course_payment'),
+    path('<int:course_pk>/lesson/<int:pk>/payment/', PaymentCreateApiView.as_view(), name='lesson_payment'),
 ]
 
 urlpatterns += router.urls
