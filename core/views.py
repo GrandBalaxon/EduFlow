@@ -75,6 +75,10 @@ class LessonUpdateApiView(LessonOwnerOrModeratorFilterMixin, generics.UpdateAPIV
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
+    def perform_update(self, serializer):
+        lesson = serializer.save()
+        send_course_update_notification.delay(lesson.course.id)
+
 @extend_schema(tags=["Уроки"], summary="Удаление урока")
 class LessonDestroyApiView(LessonOwnerOrModeratorFilterMixin, generics.DestroyAPIView):
     serializer_class = LessonSerializer
