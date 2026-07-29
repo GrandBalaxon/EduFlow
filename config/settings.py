@@ -139,6 +139,13 @@ CELERY_TASK_TRACK_STARTED = True
 # Максимальное время на выполнение задачи
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'users.tasks.users_last_activity_check',  # Путь к задаче
+        'schedule': timedelta(hours=24),  # Расписание выполнения задачи
+    },
+}
+
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
