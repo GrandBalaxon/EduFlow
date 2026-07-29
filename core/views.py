@@ -9,6 +9,7 @@ from core.models import Course, Lesson
 from core.paginators import MyPageNumberPagination
 from core.permissions import IsModerator, IsNotModerator, IsOwner
 from core.serializers import CourseSerializer, LessonSerializer
+from core.tasks import send_course_update_notification
 
 
 @extend_schema(tags=["Курсы"])
@@ -27,6 +28,10 @@ class CourseViewSet(LessonOwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        send_course_update_notification.delay(course.id)
 
     def get_permissions(self):
         if self.action == 'create':
