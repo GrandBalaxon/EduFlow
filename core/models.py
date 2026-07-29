@@ -19,6 +19,9 @@ class Course(models.Model):
     description = models.TextField(verbose_name="Краткое описание")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name="courses")
     price = models.PositiveIntegerField(verbose_name='Цена (в рублях)', default=100)
+    last_update_notification_date = models.DateTimeField(
+        default=None, null=True, blank=True, verbose_name="Дата последнего уведомления об обновлении"
+    )
 
     def __str__(self):
         return self.title
