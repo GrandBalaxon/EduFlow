@@ -1,0 +1,35 @@
+## Этап сборки зависимостей
+FROM python:3.14-slim AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    POETRY_VERSION=2.3.2 \
+    POETRY_HOME="/opt/poetry"
+
+RUN pip install poetry==$POETRY_VERSION
+
+WORKDIR /app
+
+# Копируем только файлы для установки зависимостей (кэширование слоя)
+COPY pyproject.toml poetry.lock ./
+
+# Устанавливаем зависимости без dev-групп
+RUN poetry install --without dev --without lint
+
+
+## Финальный образ
+FROM python:3.14-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Копируем установленные пакеты из builder-образа
+COPY --from=builder /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Копируем исходный код
+COPY . .
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
