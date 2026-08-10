@@ -4,7 +4,8 @@ FROM python:3.14-slim AS builder
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     POETRY_VERSION=2.3.2 \
-    POETRY_HOME="/opt/poetry"
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_CREATE=false
 
 RUN pip install poetry==$POETRY_VERSION
 
@@ -14,7 +15,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
 # Устанавливаем зависимости без dev-групп
-RUN poetry install --without dev --without lint
+RUN poetry install --without dev --without lint --no-root --no-interaction --no-ansi
 
 
 ## Финальный образ
