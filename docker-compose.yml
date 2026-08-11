@@ -54,6 +54,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_started
 
   celery_worker:
     build: .
