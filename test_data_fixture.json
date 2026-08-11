@@ -1,0 +1,177 @@
+[
+{
+    "model": "core.course",
+    "pk": 1,
+    "fields": {
+        "title": "Разработчик на Python",
+        "preview_image": "",
+        "description": "Описание жесткого и бескомпромисного курса по становлению разработчиком на Python 9000 уровня. Ты сто процентов приуспеешь после прохождения нашего курса, даже если тебе 50 лет+, главное стараться. А если не старался, то сам виноват - как говорится.",
+        "owner": 1
+    }
+},
+{
+    "model": "core.course",
+    "pk": 2,
+    "fields": {
+        "title": "Курс по становлению феей Winx",
+        "preview_image": "",
+        "description": "После прохождения нашего курса, мы поможем вам стать полноправной феей Winx. Обучим всем доступным трансформациям, откроем ваш третий глаз и обучим всем премудростям энчантикса.",
+        "owner": 2
+    }
+},
+{
+    "model": "core.lesson",
+    "pk": 1,
+    "fields": {
+        "title": "Базовое превращение",
+        "description": "Урок по базовому превращению в фею. Определенеию своего элемента и любимого цвета.",
+        "course": 2,
+        "preview_image": "",
+        "video_link": null,
+        "owner": 2
+    }
+},
+{
+    "model": "core.lesson",
+    "pk": 2,
+    "fields": {
+        "title": "Нахождение своего айдола для поклонения",
+        "description": "Важнейший этап по становлению феей.",
+        "course": 2,
+        "preview_image": "",
+        "video_link": null,
+        "owner": 2
+    }
+},
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "Balaxon1kakaov",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "chernika_forte_2000@mail.ru",
+        "phone_number": "+79021359714",
+        "city": "Мурманск",
+        "avatar": "",
+        "is_active": true,
+        "is_staff": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+        "password": "Uwuwu",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "uwu2000@mail.ru",
+        "phone_number": "+79021359715",
+        "city": "Обнинск",
+        "avatar": "",
+        "is_active": true,
+        "is_staff": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$VkblNF4sJaSgfwcUTjCRk3$XluIYJVu5i+84psw/dLhf2xCquVkqQDeKfUULkurqPU=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "test@test.com",
+        "phone_number": "+71234567890",
+        "city": "TestCity",
+        "avatar": "",
+        "is_active": true,
+        "is_staff": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$M51I0uTtvKMM79RwMTo2oJ$q50LAbB5g6rWTEtf8ABNbdHy4+L4VUqYQeXDk+h7kJM=",
+        "last_login": "2026-07-12T15:26:14Z",
+        "is_superuser": true,
+        "email": "admin@mail.ru",
+        "phone_number": null,
+        "city": "Nothingtown",
+        "avatar": "",
+        "is_active": true,
+        "is_staff": true,
+        "groups": [
+            1
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.payment",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "date": "2026-07-08",
+        "course": 1,
+        "lesson": null,
+        "amount": "5000.00",
+        "method": "transfer"
+    }
+},
+{
+    "model": "users.payment",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "date": "2026-07-08",
+        "course": null,
+        "lesson": 1,
+        "amount": "1500.00",
+        "method": "cash"
+    }
+},
+{
+    "model": "users.payment",
+    "pk": 3,
+    "fields": {
+        "user": 1,
+        "date": "2026-07-08",
+        "course": 2,
+        "lesson": null,
+        "amount": "7000.00",
+        "method": "transfer"
+    }
+},
+{
+    "model": "users.payment",
+    "pk": 4,
+    "fields": {
+        "user": 2,
+        "date": "2026-07-08",
+        "course": null,
+        "lesson": 2,
+        "amount": "2000.00",
+        "method": "cash"
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+        "name": "Moderator",
+        "permissions": [
+            26,
+            28,
+            30,
+            32
+        ]
+    }
+}
+]
