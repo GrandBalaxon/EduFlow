@@ -1,0 +1,30 @@
+# GIT
+.git
+.gitignore
+
+# Переменные окружения
+.env
+.env.docker
+
+# Python
+venv
+__pycache__
+*.pyc
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Базы данных
+*.sqlite3
+test_db.sqlite3
+
+# Отчёты тестов и покрытия
+htmlcov/
+.coverage
+coverage.xml
+
+# IDE
+.idea/
+.vscode/
