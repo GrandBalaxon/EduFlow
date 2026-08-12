@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from core.models import Course, Lesson
-from users.models import User, Subscription
+from users.models import User
 
 
 class BaseTestCase(APITestCase):
@@ -53,11 +53,19 @@ class LessonCRUDTestCase(BaseTestCase):
         super().setUp()
         # URLs
         self.lesson_list_url = reverse('core:lesson_list', kwargs={'course_pk': self.course.pk})
-        self.lesson_detail_url = reverse('core:lesson_details', kwargs={'course_pk': self.course.pk, 'pk': self.lesson.pk})
+        self.lesson_detail_url = reverse(
+            'core:lesson_details',
+            kwargs={'course_pk': self.course.pk, 'pk': self.lesson.pk}
+        )
         self.lesson_create_url = reverse('core:lesson_create', kwargs={'course_pk': self.course.pk})
-        self.lesson_update_url = reverse('core:lesson_update', kwargs={'course_pk': self.course.pk, 'pk': self.lesson.pk})
-        self.lesson_delete_url = reverse('core:lesson_delete', kwargs={'course_pk': self.course.pk, 'pk': self.lesson.pk})
-
+        self.lesson_update_url = reverse(
+            'core:lesson_update',
+            kwargs={'course_pk': self.course.pk, 'pk': self.lesson.pk}
+        )
+        self.lesson_delete_url = reverse(
+            'core:lesson_delete',
+            kwargs={'course_pk': self.course.pk, 'pk': self.lesson.pk}
+        )
 
     # метод LIST
     def test_owner_can_list_lessons(self):
@@ -85,7 +93,6 @@ class LessonCRUDTestCase(BaseTestCase):
         """ Неавторизованный не может смотреть уроки """
         response = self.client.get(self.lesson_list_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
 
     # метод CREATE
     def test_owner_can_create_lesson(self):
@@ -136,7 +143,6 @@ class LessonCRUDTestCase(BaseTestCase):
         response = self.client.post(self.lesson_create_url, data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-
     # метод UPDATE
     def test_owner_can_update_lesson(self):
         """ Владелец может обновить свой урок """
@@ -162,7 +168,6 @@ class LessonCRUDTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.lesson.refresh_from_db()
         self.assertEqual(self.lesson.title, 'Отредактировано модератором')
-
 
     # метод DELETE
     def test_owner_can_delete_lesson(self):
@@ -192,7 +197,6 @@ class SubscriptionTests(BaseTestCase):
     def setUp(self):
         super().setUp()
         self.subscription_url = reverse('core:subscription', kwargs={'course_pk': self.course.pk})
-
 
     def test_subscribe_to_course(self):
         """ Пользователь может подписаться на курс """

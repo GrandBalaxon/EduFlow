@@ -15,10 +15,19 @@ from core.tasks import send_course_update_notification
 @extend_schema(tags=["Курсы"])
 @extend_schema_view(
     list=extend_schema(summary='Список курсов', description='Модератор видит все курсы, пользователь — только свои.'),
-    create=extend_schema(summary='Создание курса', description='Создать курс может любой авторизованный, кроме модератора.'),
+    create=extend_schema(
+        summary='Создание курса',
+        description='Создать курс может любой авторизованный, кроме модератора.'
+    ),
     retrieve=extend_schema(summary='Детали курса', description='Модератор или владелец получает информацию о курсе.'),
-    update=extend_schema(summary='Обновление курса', description='Модератор или владелец полностью обновляет данные курса.'),
-    partial_update=extend_schema(summary='Частичное обновление курса', description='Модератор или владелец частично обновляет данные курса.'),
+    update=extend_schema(
+        summary='Обновление курса',
+        description='Модератор или владелец полностью обновляет данные курса.'
+    ),
+    partial_update=extend_schema(
+        summary='Частичное обновление курса',
+        description='Модератор или владелец частично обновляет данные курса.'
+    ),
     destroy=extend_schema(summary='Удаление курса', description='Только владелец (не модератор) может удалить курс.'),
 )
 class CourseViewSet(LessonOwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
@@ -49,10 +58,12 @@ class LessonListApiView(LessonOwnerOrModeratorFilterMixin, generics.ListAPIView)
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
     pagination_class = MyPageNumberPagination
 
+
 @extend_schema(tags=["Уроки"], summary="Детали урока")
 class LessonRetrieveApiView(LessonOwnerOrModeratorFilterMixin, generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModerator | IsOwner]
+
 
 @extend_schema(tags=["Уроки"], summary="Создание урока")
 class LessonCreateApiView(generics.CreateAPIView):
@@ -70,6 +81,7 @@ class LessonCreateApiView(generics.CreateAPIView):
 
         serializer.save(owner=self.request.user, course=course)
 
+
 @extend_schema(tags=["Уроки"], summary="Обновление урока")
 class LessonUpdateApiView(LessonOwnerOrModeratorFilterMixin, generics.UpdateAPIView):
     serializer_class = LessonSerializer
@@ -78,6 +90,7 @@ class LessonUpdateApiView(LessonOwnerOrModeratorFilterMixin, generics.UpdateAPIV
     def perform_update(self, serializer):
         lesson = serializer.save()
         send_course_update_notification.delay(lesson.course.id)
+
 
 @extend_schema(tags=["Уроки"], summary="Удаление урока")
 class LessonDestroyApiView(LessonOwnerOrModeratorFilterMixin, generics.DestroyAPIView):

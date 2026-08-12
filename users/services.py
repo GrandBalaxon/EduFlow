@@ -20,7 +20,7 @@ def create_stripe_product(product: 'Course | Lesson') -> stripe.Product:
     return stripe_product
 
 
-def create_stripe_price(product: 'Product', price: int) -> stripe.Price:
+def create_stripe_price(product: stripe.Product, price: int) -> stripe.Price:
     """Создаёт цену в Stripe."""
     price = stripe.Price.create(
         currency='rub',
