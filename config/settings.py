@@ -127,7 +127,8 @@ AUTH_USER_MODEL = "users.User"
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
 
-## CELERY
+# CELERY
+
 # URL-адрес брокера сообщений
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 # URL-адрес брокера результатов, также Redis
