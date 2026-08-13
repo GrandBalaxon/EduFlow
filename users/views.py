@@ -32,17 +32,20 @@ class UserRetrieveApiView(generics.RetrieveAPIView):
             return UserPrivateSerializer
         return UserPublicSerializer
 
+
 @extend_schema(tags=["Пользователи"], summary="Регистрация / Создание пользователя")
 class UserCreateApiView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserPrivateSerializer
     permission_classes = [AllowAny]
 
+
 @extend_schema(tags=["Пользователи"], summary="Обновление данных пользователя")
 class UserUpdateApiView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserPrivateSerializer
     permission_classes = [IsAuthenticated, IsProfileOwner]
+
 
 @extend_schema(
     tags=["Пользователи"],
