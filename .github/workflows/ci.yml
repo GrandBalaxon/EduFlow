@@ -3,8 +3,10 @@ name: Django CI
 on: [push, pull_request]
 
 jobs:
+
   lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -35,12 +37,50 @@ jobs:
       - name: Run Flake8
         run: poetry run flake8 .
 
-
-  test:
-    needs: lint
+  checks:
+    name: Run system and migration checks
     runs-on: ubuntu-latest
     env:
       DJANGO_SETTINGS_MODULE: config.settings_ci
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}-dev
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root --with dev
+
+      - name: Django System Check
+        run: poetry run python manage.py check
+
+      - name: Check for missing migrations
+        run: poetry run python manage.py makemigrations --check --dry-run
+
+  test:
+    needs: [checks]
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings_ci
+
     steps:
       - name: Check out Code
         uses: actions/checkout@v4
@@ -71,9 +111,8 @@ jobs:
       - name: Run tests
         run: poetry run python manage.py test
 
-
   build:
-    needs: test
+    needs: [lint, test]
     runs-on: ubuntu-latest
 
     steps:
@@ -82,7 +121,6 @@ jobs:
 
       - name: Build all images
         run: docker compose build
-
 
   deploy:
     needs: build
