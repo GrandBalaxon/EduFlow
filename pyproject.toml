@@ -42,3 +42,25 @@ lint = [
     "isort (>=8.0.1,<9.0.0)",
     "flake8 (>=7.3.0,<8.0.0)"
 ]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/migrations/*",
+    "*/venv/*",
+    "*/env/*",
+    "manage.py",
+    "*/settings.py",
+    "*/settings_ci.py",
+    "*/wsgi.py",
+    "*/asgi.py",
+    "*/tests/*",
+    "*/tests.py",
+    "*/test_*.py",
+    "*/tests_*.py",
+]
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
