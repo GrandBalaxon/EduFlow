@@ -118,16 +118,15 @@ jobs:
       - name: Run tests with coverage
         run: poetry run coverage run manage.py test --noinput
 
-      - name: Generate coverage report
-        run: |
-          poetry run coverage report -m
-          poetry run coverage xml
+      - name: Show coverage report in logs
+        run: poetry run coverage report -m
 
       - name: Upload coverage data
         uses: actions/upload-artifact@v4
         with:
           name: coverage-data
-          path: coverage.xml
+          path: .coverage
+          include-hidden-files: true
           if-no-files-found: error
 
   build:
@@ -218,6 +217,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: read
 
     steps:
       - name: Check out code
