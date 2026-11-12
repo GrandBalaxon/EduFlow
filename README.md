@@ -101,9 +101,112 @@
 
 ---
 
-## 📖 Документация и запуск
+## 🚀 Быстрый старт
 
-👉 **[Перейти к руководству](docs/SETUP.md)**
+Нужны только [Docker](https://docs.docker.com/get-docker/) и Docker Compose.
+
+```bash
+# 1. Клонируем репозиторий
+git clone https://github.com/GrandBalaxon/EduFlow.git
+cd EduFlow
+
+# 2. Готовим переменные окружения
+cp .env.sample .env.docker   # и заполняем значения
+
+# 3. Поднимаем всё одной командой
+docker compose up --build
+```
+
+Готово — API доступен по адресам:
+
+| Что | Адрес |
+|:--|:--|
+| 🌐 API через Nginx | http://localhost/ |
+| 📘 Swagger UI | http://localhost/api/docs/ |
+| 🧾 OpenAPI-схема | http://localhost/api/schema/ |
+| 🛠️ Django Admin | http://localhost/admin/ |
+
+<br>
+
+<details>
+<summary><b>🍃 Запуск без Docker (локально через Poetry)</b></summary>
+
+<br>
+
+```bash
+poetry install
+poetry run python manage.py migrate
+poetry run python manage.py createsuperuser
+poetry run python manage.py runserver
+```
+
+Celery (в двух отдельных терминалах):
+
+```bash
+poetry run celery -A config worker -l info -P eventlet
+poetry run celery -A config beat -l info
+```
+
+Подробнее — в [руководстве по установке](docs/SETUP.md).
+
+</details>
+
+> ⚠️ **Минимум для запуска:** `SECRET_KEY`, `DEBUG` и данные PostgreSQL.
+> Ключи Stripe и настройки почты нужны только для оплаты и писем.
+> Полный список переменных — в [`.env.sample`](.env.sample) и [руководстве по установке](docs/SETUP.md).
+
+---
+
+## 🔌 API за минуту
+
+Все запросы к `/course/` и `/user/` требуют заголовок `Authorization: Bearer <access_token>`.
+
+```bash
+# Получаем токен
+curl -X POST http://localhost/token/ \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "password": "secret"}'
+
+# Список своих курсов
+curl http://localhost/course/ -H "Authorization: Bearer <access_token>"
+
+# Подписка на курс (повторный запрос — отписка)
+curl -X POST http://localhost/course/1/subscription/ \
+  -H "Authorization: Bearer <access_token>"
+
+# Оплата курса — в ответ придёт ссылка на Stripe
+curl -X POST http://localhost/course/1/payment/ \
+  -H "Authorization: Bearer <access_token>"
+```
+
+| Группа | Префикс | Что внутри |
+|:--|:--|:--|
+| 👤 Пользователи | `/user/` | регистрация, профиль, удаление, платежи |
+| 📖 Курсы | `/course/` | CRUD курсов, уроки, подписка, оплата |
+| 🔑 Авторизация | `/token/` | получение и обновление JWT |
+| 📘 Документация | `/api/docs/` | Swagger UI |
+
+Полное описание эндпоинтов с примерами — в **[справочнике API](docs/API.md)**.
+
+---
+
+## 🧪 Тесты и CI
+
+```bash
+# запуск тестов локально
+poetry run coverage run manage.py test
+poetry run coverage report -m
+```
+
+Проверки в GitHub Actions (`.github/workflows/ci.yml`):
+
+| Шаг | Что проверяет |
+|:--|:--|
+| 🧹 **lint** | стиль кода через flake8 |
+| ✅ **checks** | `manage.py check` и отсутствие незакоммиченных миграций |
+| 🧪 **test** | тесты API с отчётом покрытия |
+| 🐳 **build** | сборка всех Docker-образов |
+| 🚀 **deploy** | выкладка на сервер при пуше в `main` |
 
 ---
 
