@@ -28,3 +28,6 @@ coverage.xml
 # IDE
 .idea/
 .vscode/
+
+# Temporary diff files
+*.diff
