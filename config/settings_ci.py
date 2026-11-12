@@ -4,6 +4,8 @@ from .settings import *  # noqa: F401,F403
 
 logging.disable(logging.INFO)
 
+SECRET_KEY = "dummy-secret-key-for-ci"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
