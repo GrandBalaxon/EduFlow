@@ -1,13 +1,18 @@
 # 🎓 EduFlow Django REST API
 
-![Python](https://img.shields.io/badge/python-3.14-blue.svg)
-![Django](https://img.shields.io/badge/django-6.0-green.svg)
-![DRF](https://img.shields.io/badge/django%20rest%20framework-3.17-red.svg)
-![PostgreSQL](https://img.shields.io/badge/postgresql-16-blue.svg)
-![Poetry](https://img.shields.io/badge/dependency%20manager-poetry-blue.svg)
-![Docker](https://img.shields.io/badge/docker-compose-blue.svg)
-![Celery](https://img.shields.io/badge/celery-5.6-green.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![CI](https://github.com/GrandBalaxon/EduFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/GrandBalaxon/EduFlow/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/GrandBalaxon/EduFlow/python-coverage-comment-action-data/badge.svg)](https://github.com/GrandBalaxon/EduFlow/tree/python-coverage-comment-action-data)
+[![License](https://img.shields.io/badge/license-MIT-3DA639.svg?logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.14-3776AB.svg?logo=python&logoColor=white)](https://www.python.org)
+[![Django](https://img.shields.io/badge/django-6.0-092E20.svg?logo=django&logoColor=white)](https://www.djangoproject.com)
+
+[![DRF](https://img.shields.io/badge/DRF-3.17-A30000.svg?logo=django&logoColor=white)](https://www.django-rest-framework.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Celery](https://img.shields.io/badge/Celery-5.6-37814A.svg?logo=celery&logoColor=white)](https://docs.celeryq.dev)
+[![Redis](https://img.shields.io/badge/Redis-7-DC382D.svg?logo=redis&logoColor=white)](https://redis.io)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF.svg?logo=stripe&logoColor=white)](https://stripe.com)
+[![Poetry](https://img.shields.io/badge/Poetry-2.x-60A5FA.svg?logo=poetry&logoColor=white)](https://python-poetry.org)
 
 ## 📚 О проекте
 
