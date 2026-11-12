@@ -31,6 +31,8 @@ jobs:
   test:
     needs: lint
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings_ci
     steps:
       - name: Check out Code
         uses: actions/checkout@v4
@@ -51,13 +53,6 @@ jobs:
           poetry install --with dev
 
       - name: Run tests
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: "True"
-          CELERY_BROKER_URL: redis://localhost:6379/0
-          CELERY_RESULT_BACKEND: redis://localhost:6379/0
-          STRIPE_SECRET_KEY: sk_test_dummy
-          STRIPE_PUBLISHABLE_KEY: pk_test_dummy
         run: poetry run python manage.py test
 
 
