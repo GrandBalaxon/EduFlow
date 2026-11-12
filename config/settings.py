@@ -1,5 +1,4 @@
 import os
-import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -142,8 +141,10 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
     'task-name': {
-        'task': 'users.tasks.users_last_activity_check',  # Путь к задаче
-        'schedule': timedelta(hours=24),  # Расписание выполнения задачи
+        # Путь к задаче
+        'task': 'users.tasks.users_last_activity_check',
+        # Расписание выполнения задачи
+        'schedule': timedelta(hours=24),
     },
 }
 
@@ -157,16 +158,3 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-
-# Датабаза sqlite3 для запуска тестов
-if 'test' in sys.argv:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'test_db.sqlite3',
-        }
-    }
-    # Celery в eager-режиме (выполняется сразу, без Redis)
-    CELERY_TASK_ALWAYS_EAGER = True
-    CELERY_TASK_EAGER_PROPAGATES = True
