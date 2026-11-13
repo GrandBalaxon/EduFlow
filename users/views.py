@@ -1,4 +1,5 @@
 import stripe
+from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
@@ -128,6 +129,11 @@ class PaymentCreateApiView(generics.CreateAPIView):
 class PaymentStatusApiView(generics.RetrieveAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self) -> QuerySet[Payment]:
+        """Возвращаем только платежи текущего пользователя."""
+        return super().get_queryset().filter(user=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
         payment = self.get_object()
