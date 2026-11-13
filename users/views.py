@@ -27,6 +27,9 @@ class UserRetrieveApiView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('payments')
+
     def get_serializer_class(self):
         obj = self.get_object()
         if obj == self.request.user:
