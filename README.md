@@ -1,4 +1,4 @@
-# 🎓 EduFlow Django REST API
+<img src="docs/assets/banner.png" alt="EduFlow — образовательная платформа на Django REST Framework" width="100%">
 
 [![CI](https://github.com/GrandBalaxon/EduFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/GrandBalaxon/EduFlow/actions/workflows/ci.yml)
 [![Coverage](https://raw.githubusercontent.com/GrandBalaxon/EduFlow/python-coverage-comment-action-data/badge.svg)](https://github.com/GrandBalaxon/EduFlow/tree/python-coverage-comment-action-data)
@@ -13,6 +13,8 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 [![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF.svg?logo=stripe&logoColor=white)](https://stripe.com)
 [![Poetry](https://img.shields.io/badge/Poetry-2.x-60A5FA.svg?logo=poetry&logoColor=white)](https://python-poetry.org)
+
+---
 
 ## 📚 О проекте
 
