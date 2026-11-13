@@ -1,3 +1,4 @@
+from django.db.models import OuterRef, Exists, Count
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets, generics
@@ -10,6 +11,7 @@ from core.paginators import MyPageNumberPagination
 from core.permissions import IsModerator, IsNotModerator, IsOwner
 from core.serializers import CourseSerializer, LessonSerializer
 from core.tasks import send_course_update_notification
+from users.models import Subscription
 
 
 @extend_schema(tags=["Курсы"])
@@ -34,6 +36,28 @@ class CourseViewSet(LessonOwnerOrModeratorFilterMixin, viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = MyPageNumberPagination
+
+    def get_queryset(self):
+        # 1. Аннотируем количество уроков
+        queryset = super().get_queryset().annotate(
+            lessons_count_annotated=Count('lessons')
+        )
+
+        # 2. Оптимизируем загрузку уроков (prefetch)
+        queryset = queryset.prefetch_related('lessons')
+
+        # 3. Аннотируем подписку текущего пользователя
+        if self.request.user.is_authenticated:
+            user_subscription = Subscription.objects.filter(
+                user=self.request.user,
+                course=OuterRef('pk'),
+                is_active=True
+            )
+            queryset = queryset.annotate(
+                is_subscribed_annotated=Exists(user_subscription)
+            )
+
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
