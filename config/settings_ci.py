@@ -6,6 +6,8 @@ logging.disable(logging.INFO)
 
 SECRET_KEY = "dummy-secret-key-for-ci"
 
+ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
