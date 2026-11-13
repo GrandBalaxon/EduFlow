@@ -150,7 +150,7 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
-    'task-name': {
+    'deactivate_inactive_users': {
         # Путь к задаче
         'task': 'users.tasks.users_last_activity_check',
         # Расписание выполнения задачи
